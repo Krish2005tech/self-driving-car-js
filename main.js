@@ -19,14 +19,46 @@ const N=100;
 const cars=generateCars(N);
 let bestCar = cars[0];
 // car.draw(ctx);
-const traffic=[
-    new Car(road.getLaneCenter(2),-300,30,50,"DUMMY"),
-    new Car(road.getLaneCenter(2),-500,30,50,"DUMMY"),
-    new Car(road.getLaneCenter(1),-1000,30,50,"DUMMY"),
-    new Car(road.getLaneCenter(3),-2000,30,50,"DUMMY"),
-    new Car(road.getLaneCenter(0),-300,30,50,"DUMMY"),
-    new Car(road.getLaneCenter(3),-600,30,50,"DUMMY")
-]
+// const traffic=[
+//     new Car(road.getLaneCenter(2),-300,30,50,"DUMMY"),
+//     new Car(road.getLaneCenter(2),-500,30,50,"DUMMY"),
+//     new Car(road.getLaneCenter(1),-1000,30,50,"DUMMY"),
+//     new Car(road.getLaneCenter(3),-2000,30,50,"DUMMY"),
+//     new Car(road.getLaneCenter(0),-300,30,50,"DUMMY"),
+//     new Car(road.getLaneCenter(3),-600,30,50,"DUMMY")
+// ]
+const traffic = [];
+const TRAFFIC_COUNT = 7;
+const TRAFFIC_RANGE_AHEAD = 300;
+const TRAFFIC_RANGE_BEHIND = 40;
+function updateTraffic() {
+    // Remove cars that are too far behind
+    for (let i = traffic.length - 1; i >= 0; i--) {
+        if (traffic[i].y > bestCar.y + 200) {
+            traffic.splice(i, 1);
+        }
+    }
+
+    // Keep traffic count stable
+    while (traffic.length < TRAFFIC_COUNT) {
+        const lane = Math.floor(Math.random() * lanes);
+
+        const yOffset =
+            bestCar.y -
+            (Math.random() * TRAFFIC_RANGE_AHEAD + TRAFFIC_RANGE_BEHIND)-150;
+
+        traffic.push(
+            new Car(
+                road.getLaneCenter(lane),
+                yOffset,
+                30,
+                50,
+                "DUMMY"
+            )
+        );
+    }
+}
+
 
 animate();
 
@@ -63,6 +95,7 @@ function generateCars(n){
 
 function animate(time) {
 
+    updateTraffic();
     traffic.forEach((dummy)=>{
         dummy.update(road.borders,[]);
     })

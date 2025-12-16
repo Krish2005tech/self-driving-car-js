@@ -12,7 +12,7 @@ class Car {
 
         switch(controlType){
             case "KEYS":
-                this.maxSpeed = 5;
+                this.maxSpeed = 10;
                 // this.sensor = new Sensor(this);
                 break
             case "DUMMY":
